@@ -1,0 +1,38 @@
+{
+  "meetings": [
+    {
+      "id": 2,
+      "uuid": "6fea609a-77f9-4736-9eb4-91b644f94598",
+      "date": "2025-08-22",
+      "topic": "Bölüm Toplantısı-1",
+      "decision": "Teacher X eğitimlerini seyret\n\nCoursera’dan en az dönemde 2 eğitim olmalı, Bir öğretmen en az 3 eğitim almalı, tüm yıl için toplamda\n\nTeacher X “uğur mert” eğitimini mutlaka seyret\n\nGörev dağılımına bak haziranda yaptığımız toplantıda.\n\nUBD 11. sınıfa yapılacak ve Atlasa yüklenecek.\n\nMadlene geri bildirim yap.\n\n11.sınıf İzlencelerini revize et \n\nProje konuları çalış\n\n\nÖdevler yazılı uyarı sistemi verilmiyor artık. Eğer 2 ödev yapılmazsa akademik uyarı verilecek.\n\nÖdev ilk ödevini yapmazsa hemen veliyi ara\n\nÖdev teslimlerinde İlk 3 gün içinde verirse öğrenci 100  üzerinden 75, 3–7 gün 50. Teslim tarihinden sonra 1 hafta geçerse ödevi alma\n\nÖdev verirken clasroom sistemini kullan\n\nK12 ye ödevleri gir\n\nÖğretmen el kitabını oku\n\nİlk dersin varsa 8.05 de odada ol",
+      "notes": "Derya Hoca ve bölümün tamamı olarak toplandık",
+      "tags": "ödev, program, kurallar, duyuru, karar",
+      "images": [],
+      "documents": [],
+      "links": [],
+      "revised_from_id": null,
+      "created_at": "2025-08-29T09:49:48.601Z",
+      "updated_at": "2025-08-29T09:49:48.601Z",
+      "task_analyzed": true,
+      "task_analyzed_at": "2025-08-29T10:08:31.871Z"
+    },
+    {
+      "id": 1,
+      "uuid": "4c5e3f47-6ea9-4f10-86a7-933b2ae934a6",
+      "date": "2025-08-18",
+      "topic": "Sene Başı Genel Kurul",
+      "decision": "Coursera kurs eğitmi izle\n\nTeacher X eğitimleri izle",
+      "notes": "Elif Hoca yaptı toplantıyı",
+      "tags": "",
+      "images": [],
+      "documents": [],
+      "links": [],
+      "revised_from_id": null,
+      "created_at": "2025-08-29T09:39:15.553Z",
+      "updated_at": "2025-08-29T09:39:15.553Z",
+      "task_analyzed": true,
+      "task_analyzed_at": "2025-08-29T10:08:31.871Z"
+    }
+  ]
+}

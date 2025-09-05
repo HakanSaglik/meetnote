@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veri Temizleme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .btn:hover {
+            background-color: #c82333;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗑️ Veri Temizleme Aracı</h1>
+        <p>Bu araç, uygulamanın localStorage'ında saklanan tüm verileri temizler.</p>
+        
+        <div class="info">
+            <h3>Temizlenecek Veriler:</h3>
+            <ul>
+                <li>Tamamlanan görev ID'leri (completedTaskIds)</li>
+                <li>Soru geçmişi (questionHistory)</li>
+                <li>Diğer tüm localStorage verileri</li>
+            </ul>
+        </div>
+        
+        <button class="btn" onclick="clearAllData()">Tüm Verileri Temizle</button>
+        <button class="btn" onclick="clearSpecificData()">Sadece Uygulama Verilerini Temizle</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function clearAllData() {
+            if (confirm('Tüm localStorage verileri silinecek. Emin misiniz?')) {
+                localStorage.clear();
+                showResult('✅ Tüm localStorage verileri başarıyla temizlendi!');
+            }
+        }
+        
+        function clearSpecificData() {
+            if (confirm('Uygulama verileri silinecek. Emin misiniz?')) {
+                // Uygulama ile ilgili localStorage anahtarları
+                const keysToRemove = [
+                    'completedTaskIds',
+                    'questionHistory',
+                    'meetingData',
+                    'taskData',
+                    'apiKeys',
+                    'userSettings'
+                ];
+                
+                let removedCount = 0;
+                keysToRemove.forEach(key => {
+                    if (localStorage.getItem(key)) {
+                        localStorage.removeItem(key);
+                        removedCount++;
+                    }
+                });
+                
+                showResult(`✅ ${removedCount} adet uygulama verisi başarıyla temizlendi!`);
+            }
+        }
+        
+        function showResult(message) {
+            document.getElementById('result').innerHTML = `<div class="success">${message}</div>`;
+        }
+        
+        // Sayfa yüklendiğinde mevcut verileri göster
+        window.onload = function() {
+            const completedTasks = localStorage.getItem('completedTaskIds');
+            const questionHistory = localStorage.getItem('questionHistory');
+            
+            let info = '<h3>Mevcut Veriler:</h3>';
+            info += `<p>Tamamlanan Görevler: ${completedTasks ? JSON.parse(completedTasks).length : 0} adet</p>`;
+            info += `<p>Soru Geçmişi: ${questionHistory ? JSON.parse(questionHistory).length : 0} adet</p>`;
+            info += `<p>Toplam localStorage Anahtarı: ${Object.keys(localStorage).length} adet</p>`;
+            
+            document.querySelector('.info').innerHTML = info;
+        }
+    </script>
+</body>
+</html>
