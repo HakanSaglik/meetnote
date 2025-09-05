@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Brain, Database, Download, ArrowLeft, CheckCircle, XCircle, Plus, Trash2 } from 'lucide-react';
+import { Settings, Brain, Database, Download, ArrowLeft, CheckCircle, XCircle, Plus, Trash2, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { apiService } from '../services/api';
 import { AIProvider } from '../types/ai';
+import { APP_CONFIG } from '../utils/constants';
 
 export const SettingsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -454,6 +455,64 @@ export const SettingsPage: React.FC = () => {
                 <Download className="w-5 h-5" />
                 CSV Olarak Dışa Aktar
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Version Information Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-3 mb-2">
+              <Info className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Uygulama Bilgileri</h2>
+            </div>
+            <p className="text-gray-600 dark:text-gray-300">Sürüm ve uygulama detayları</p>
+          </div>
+          
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
+                  <span className="text-gray-600 dark:text-gray-400 font-medium">Uygulama Adı:</span>
+                  <span className="text-gray-900 dark:text-white font-semibold">{APP_CONFIG.NAME}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
+                  <span className="text-gray-600 dark:text-gray-400 font-medium">Sürüm:</span>
+                  <span className="text-blue-600 dark:text-blue-400 font-bold text-lg">{APP_CONFIG.VERSION}</span>
+                </div>
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-gray-600 dark:text-gray-400 font-medium">Açıklama:</span>
+                  <span className="text-gray-900 dark:text-white text-sm text-right max-w-xs">{APP_CONFIG.DESCRIPTION}</span>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
+                  <span className="text-gray-600 dark:text-gray-400 font-medium">Geliştirici:</span>
+                  <span className="text-gray-900 dark:text-white">{APP_CONFIG.AUTHOR}</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-700">
+                  <span className="text-gray-600 dark:text-gray-400 font-medium">İletişim:</span>
+                  <a href={`mailto:${APP_CONFIG.CONTACT}`} className="text-blue-600 dark:text-blue-400 hover:underline">{APP_CONFIG.CONTACT}</a>
+                </div>
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-gray-600 dark:text-gray-400 font-medium">GitHub:</span>
+                  <a href={APP_CONFIG.GITHUB} target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline text-sm">Kaynak Kod</a>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div className="flex items-start gap-3">
+                <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="text-blue-900 dark:text-blue-100 font-medium mb-1">Sürüm Notları</h4>
+                  <p className="text-blue-700 dark:text-blue-300 text-sm">
+                    Bu sürümde gelişmiş hata yönetimi, loading states iyileştirmeleri ve kapsamlı utility fonksiyonları eklendi.
+                    Makro değişiklikler için sürüm numarası güncellenecektir.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

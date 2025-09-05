@@ -1,26 +1,43 @@
+import { NetworkError, retryOperation, isRetryableError } from '../utils/errorHandler';
+
 const API_BASE = import.meta.env.VITE_API_URL || 
   (import.meta.env.MODE === 'production' ? '/api' : 'http://localhost:3001/api');
 
-// API response types
+// Generic API response interface
 export interface ApiResponse<T> {
   data?: T;
   error?: string;
   message?: string;
 }
 
-// Helper function to handle API responses
+// Enhanced error handling
 const handleResponse = async <T>(response: Response): Promise<T> => {
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+    let errorData: any = {};
+    try {
+      errorData = await response.json();
+    } catch {
+      // If response is not JSON, use status text
+      errorData = { error: response.statusText };
+    }
+    
+    const errorMessage = errorData.error || errorData.message || `HTTP ${response.status}: ${response.statusText}`;
+    throw new NetworkError(errorMessage, response.status, errorData.code, errorData.details);
   }
-  return response.json();
+  
+  try {
+    return await response.json();
+  } catch {
+    // If response is not JSON but status is ok, return empty object
+    return {} as T;
+  }
 };
 
-// Generic fetch wrapper with error handling
+// Generic fetch wrapper with enhanced error handling and retry logic
 const apiRequest = async <T>(
   endpoint: string, 
-  options: RequestInit = {}
+  options: RequestInit = {},
+  enableRetry: boolean = true
 ): Promise<T> => {
   const url = `${API_BASE}${endpoint}`;
   
@@ -32,13 +49,32 @@ const apiRequest = async <T>(
     ...options,
   };
 
-  try {
-    const response = await fetch(url, config);
-    return handleResponse<T>(response);
-  } catch (error) {
-    console.error(`API request failed: ${endpoint}`, error);
-    throw error;
+  const makeRequest = async (): Promise<T> => {
+    try {
+      const response = await fetch(url, config);
+      return handleResponse<T>(response);
+    } catch (error) {
+      // Network errors (fetch failures)
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new NetworkError('Ağ bağlantısı hatası. İnternet bağlantınızı kontrol edin.', 0, 'NETWORK_ERROR');
+      }
+      
+      // Re-throw NetworkError as is
+      if (error instanceof NetworkError) {
+        throw error;
+      }
+      
+      // Other errors
+      console.error(`API request failed: ${endpoint}`, error);
+      throw new NetworkError(error.message || 'Bilinmeyen bir hata oluştu', 0, 'UNKNOWN_ERROR');
+    }
+  };
+
+  if (enableRetry) {
+    return retryOperation(makeRequest, 3, 1000);
   }
+  
+  return makeRequest();
 };
 
 export const apiService = {

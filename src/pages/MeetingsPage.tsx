@@ -4,8 +4,10 @@ import { Search, Plus, Filter, Calendar, Tag, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MeetingCard } from '../components/MeetingCard';
 import { Pagination } from '../components/Pagination';
+import { SkeletonCard } from '../components/LoadingSpinner';
 import { apiService } from '../services/api';
 import { Meeting, MeetingsResponse } from '../types/meeting';
+import { handleApiError, createErrorContext } from '../utils/errorHandler';
 
 export const MeetingsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -44,6 +46,7 @@ export const MeetingsPage: React.FC = () => {
       }));
     } catch (error) {
       console.error('Failed to load meetings:', error);
+      handleApiError(error, createErrorContext('Toplantılar yükleme'));
     } finally {
       setLoading(false);
     }
@@ -174,8 +177,10 @@ export const MeetingsPage: React.FC = () => {
 
       {/* Loading State */}
       {loading && (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+          {Array.from({ length: pagination.limit }).map((_, index) => (
+            <SkeletonCard key={index} />
+          ))}
         </div>
       )}
 

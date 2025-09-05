@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { Calendar, MessageCircleQuestion, FileText, TrendingUp, Clock, Users, AlertTriangle, Settings } from 'lucide-react';
 import { MeetingCard } from '../components/MeetingCard';
 import { StatCard } from '../components/StatCard';
+import { SkeletonCard, SkeletonText } from '../components/LoadingSpinner';
 import { apiService } from '../services/api';
 import { Meeting } from '../types/meeting';
+import { handleApiError, createErrorContext } from '../utils/errorHandler';
 
 export const HomePage: React.FC = () => {
   const [recentMeetings, setRecentMeetings] = useState<Meeting[]>([]);
@@ -49,12 +51,14 @@ export const HomePage: React.FC = () => {
           }
         } catch (error) {
           console.error(`Provider ${provider.name} test failed:`, error);
+          // Don't show toast for individual provider failures during bulk testing
         }
       }
       
       setApiStatus(anyWorking ? 'working' : 'error');
     } catch (error) {
       console.error('API anahtarları kontrol edilirken hata:', error);
+      handleApiError(error, createErrorContext('API anahtarları kontrolü'));
       setHasApiKeys(false);
       setApiStatus('error');
     }
@@ -93,6 +97,7 @@ export const HomePage: React.FC = () => {
       });
     } catch (error) {
       console.error('Error loading data:', error);
+      handleApiError(error, createErrorContext('Veri yükleme', 'Ana sayfa'));
       setRecentMeetings([]);
       setStats({ totalMeetings: 0, thisMonth: 0, withRevisions: 0 });
     } finally {
@@ -131,8 +136,43 @@ export const HomePage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
+      <div className="max-w-6xl mx-auto space-y-8 px-4 dark:bg-gray-900">
+        {/* Hero Section Skeleton */}
+        <div className="text-center space-y-4 py-8">
+          <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-80 mx-auto animate-pulse"></div>
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-96 mx-auto animate-pulse"></div>
+        </div>
+
+        {/* Stats Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-white dark:bg-gray-800 rounded-xl p-6 animate-pulse">
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+
+        {/* Quick Actions Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-white dark:bg-gray-800 rounded-xl p-6 animate-pulse">
+              <div className="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded-lg mb-4"></div>
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+            </div>
+          ))}
+        </div>
+
+        {/* Recent Meetings Skeleton */}
+        <div className="space-y-4">
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 animate-pulse"></div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

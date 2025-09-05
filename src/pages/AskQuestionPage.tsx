@@ -6,6 +6,8 @@ import { toast } from 'react-hot-toast';
 import { apiService } from '../services/api';
 import { QuestionResponse, AIProvider } from '../types/ai';
 import { MeetingCard } from '../components/MeetingCard';
+import { SkeletonText } from '../components/LoadingSpinner';
+import { handleApiError, createErrorContext } from '../utils/errorHandler';
 
 export const AskQuestionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -48,12 +50,14 @@ export const AskQuestionPage: React.FC = () => {
           }
         } catch (error) {
           console.error(`Provider ${provider.name} test failed:`, error);
+          // Don't show toast for individual provider failures during bulk testing
         }
       }
       
       setApiStatus(anyWorking ? 'working' : 'error');
     } catch (error) {
       console.error('API durumu kontrol edilirken hata:', error);
+      handleApiError(error, createErrorContext('API durumu kontrolü'));
       setApiStatus('error');
     }
   };
@@ -65,6 +69,7 @@ export const AskQuestionPage: React.FC = () => {
       setSelectedProvider(data.default);
     } catch (error) {
       console.error('Failed to load providers:', error);
+      handleApiError(error, createErrorContext('AI sağlayıcıları yükleme'));
     }
   };
 
@@ -108,7 +113,7 @@ export const AskQuestionPage: React.FC = () => {
       saveQuestionHistory(question);
     } catch (error: any) {
       console.error('Failed to ask question:', error);
-      toast.error(error.message || 'Soru sorulurken bir hata oluştu');
+      handleApiError(error, createErrorContext('Soru sorma'));
     } finally {
       setLoading(false);
     }
@@ -278,12 +283,23 @@ export const AskQuestionPage: React.FC = () => {
 
           {/* Loading State */}
           {loading && (
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-8 text-center">
-              <div className="flex items-center justify-center space-x-3">
-                <Brain className="w-6 h-6 text-emerald-600 animate-pulse" />
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-600"></div>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-6">
+              <div className="flex items-center mb-4">
+                <Brain className="w-5 h-5 text-emerald-600 animate-pulse mr-2" />
+                <SkeletonText width="120px" height="20px" />
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mt-4">AI analiz ediyor ve cevap hazırlıyor...</p>
+              <div className="space-y-3">
+                <SkeletonText width="100%" height="16px" />
+                <SkeletonText width="85%" height="16px" />
+                <SkeletonText width="92%" height="16px" />
+                <SkeletonText width="78%" height="16px" />
+              </div>
+              <div className="mt-6">
+                <SkeletonText width="150px" height="18px" />
+                <div className="mt-3 space-y-2">
+                  <SkeletonText width="100%" height="60px" />
+                </div>
+              </div>
             </div>
           )}
 
